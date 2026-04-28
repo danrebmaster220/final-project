@@ -1,11 +1,8 @@
 /**
- * RegisterPage — Account creation with name fields, email, and password.
+ * RegisterPage — Multi-step account creation.
  *
- * Security features:
- * - Name validation (letters, spaces, hyphens, apostrophes only)
- * - Password strength enforcement (min 8 chars, upper, lower, number, symbol)
- * - Confirm password match check
- * - Generic error messages
+ * Step 1: Personal info (First Name, Middle Name optional, Last Name)
+ * Step 2: Credentials (Email, Password with live checklist, Confirm Password with match)
  */
 
 import { useState } from "react";
@@ -16,6 +13,7 @@ import { validateRegisterInputs } from "../utils/validators";
 import AuthCard from "../components/AuthCard";
 import FormInput from "../components/FormInput";
 import ErrorAlert from "../components/ErrorAlert";
+import PasswordChecklist from "../components/PasswordChecklist";
 
 /* User-plus icon for the auth card */
 const UserPlusIcon = (
@@ -28,6 +26,7 @@ const UserPlusIcon = (
 );
 
 export default function RegisterPage() {
+  const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     firstName: "",
     middleName: "",
@@ -44,6 +43,35 @@ export default function RegisterPage() {
 
   function handleChange(e) {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  }
+
+  // Step 1 validation
+  function handleNextStep() {
+    setError("");
+    const NAME_REGEX = /^[a-zA-Z\s'-]+$/;
+
+    if (!formData.firstName.trim() || !formData.lastName.trim()) {
+      setError("First name and last name are required.");
+      return;
+    }
+    if (!NAME_REGEX.test(formData.firstName.trim())) {
+      setError("First name can only contain letters, spaces, hyphens, and apostrophes.");
+      return;
+    }
+    if (formData.firstName.trim().length > 50) {
+      setError("First name is too long (max 50 characters).");
+      return;
+    }
+    if (formData.middleName.trim() && !NAME_REGEX.test(formData.middleName.trim())) {
+      setError("Middle name can only contain letters, spaces, hyphens, and apostrophes.");
+      return;
+    }
+    if (!NAME_REGEX.test(formData.lastName.trim())) {
+      setError("Last name can only contain letters, spaces, hyphens, and apostrophes.");
+      return;
+    }
+
+    setStep(2);
   }
 
   async function handleRegister(e) {
@@ -71,95 +99,132 @@ export default function RegisterPage() {
     }
   }
 
+  const stepTitle = step === 1 ? "Personal Information" : "Account Credentials";
+  const stepSubtitle = step === 1
+    ? "Step 1 of 2 — Tell us about yourself"
+    : "Step 2 of 2 — Set up your login credentials";
+
   return (
     <div className="auth-page">
-      <AuthCard icon={UserPlusIcon} title="Create Account" subtitle="Fill in the details below to register" wide>
+      <AuthCard icon={UserPlusIcon} title="Create Account" subtitle={stepSubtitle} wide>
+        {/* Step indicator */}
+        <div className="step-indicator">
+          <div className={`step-dot ${step >= 1 ? "step-active" : ""}`}>1</div>
+          <div className="step-line"></div>
+          <div className={`step-dot ${step >= 2 ? "step-active" : ""}`}>2</div>
+        </div>
+
         <ErrorAlert message={error} />
 
-        <form onSubmit={handleRegister} noValidate>
-          <div className="form-row">
-            <FormInput
-              id="reg-firstName"
-              label="First Name"
-              name="firstName"
-              value={formData.firstName}
-              onChange={handleChange}
-              placeholder="First name"
-              maxLength={50}
-              required
-            />
-            <FormInput
-              id="reg-middleName"
-              label="Middle Name"
-              name="middleName"
-              value={formData.middleName}
-              onChange={handleChange}
-              placeholder="Middle name"
-              maxLength={50}
-              optional
-            />
-          </div>
+        <form onSubmit={step === 2 ? handleRegister : (e) => { e.preventDefault(); handleNextStep(); }} noValidate>
+          {step === 1 && (
+            <>
+              <h3 className="step-section-title">{stepTitle}</h3>
+              <div className="form-row">
+                <FormInput
+                  id="reg-firstName"
+                  label="First Name"
+                  name="firstName"
+                  value={formData.firstName}
+                  onChange={handleChange}
+                  placeholder="First name"
+                  maxLength={50}
+                  required
+                />
+                <FormInput
+                  id="reg-middleName"
+                  label="Middle Name"
+                  name="middleName"
+                  value={formData.middleName}
+                  onChange={handleChange}
+                  placeholder="Middle name"
+                  maxLength={50}
+                  optional
+                />
+              </div>
 
-          <FormInput
-            id="reg-lastName"
-            label="Last Name"
-            name="lastName"
-            value={formData.lastName}
-            onChange={handleChange}
-            placeholder="Last name"
-            maxLength={50}
-            required
-          />
+              <FormInput
+                id="reg-lastName"
+                label="Last Name"
+                name="lastName"
+                value={formData.lastName}
+                onChange={handleChange}
+                placeholder="Last name"
+                maxLength={50}
+                required
+              />
 
-          <FormInput
-            id="reg-email"
-            label="Email"
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            placeholder="Enter your email"
-            autoComplete="email"
-            maxLength={100}
-            required
-          />
+              <button type="submit" className="btn btn-primary">
+                Next
+              </button>
+            </>
+          )}
 
-          <FormInput
-            id="reg-password"
-            label="Password"
-            type="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            placeholder="Min 8 chars, upper, lower, number, symbol"
-            autoComplete="new-password"
-            maxLength={128}
-            required
-          />
+          {step === 2 && (
+            <>
+              <h3 className="step-section-title">{stepTitle}</h3>
 
-          <FormInput
-            id="reg-confirmPassword"
-            label="Confirm Password"
-            type="password"
-            name="confirmPassword"
-            value={formData.confirmPassword}
-            onChange={handleChange}
-            placeholder="Re-enter your password"
-            autoComplete="new-password"
-            maxLength={128}
-            required
-          />
+              <FormInput
+                id="reg-email"
+                label="Email"
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                placeholder="Enter your email"
+                autoComplete="email"
+                maxLength={100}
+                required
+              />
 
-          <button type="submit" className="btn btn-primary" disabled={isLoading}>
-            {isLoading ? (
-              <span className="btn-loading">
-                <span className="spinner-small"></span>
-                Creating account...
-              </span>
-            ) : (
-              "Register"
-            )}
-          </button>
+              <FormInput
+                id="reg-password"
+                label="Password"
+                type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                placeholder="Create a password"
+                autoComplete="new-password"
+                maxLength={128}
+                required
+              />
+
+              <FormInput
+                id="reg-confirmPassword"
+                label="Confirm Password"
+                type="password"
+                name="confirmPassword"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                placeholder="Re-enter your password"
+                autoComplete="new-password"
+                maxLength={128}
+                required
+              />
+
+              <PasswordChecklist
+                password={formData.password}
+                confirmPassword={formData.confirmPassword}
+              />
+
+              <div className="step-buttons">
+                <button type="button" className="btn btn-secondary" onClick={() => { setStep(1); setError(""); }}>
+                  Back
+                </button>
+                <button type="submit" className="btn btn-primary" disabled={isLoading}>
+                  {isLoading ? (
+                    <span className="btn-loading">
+                      <span className="spinner-small"></span>
+                      Creating...
+                    </span>
+                  ) : (
+                    "Register"
+                  )}
+                </button>
+              </div>
+            </>
+          )}
         </form>
 
         <p className="auth-footer">

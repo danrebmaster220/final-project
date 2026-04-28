@@ -7,7 +7,7 @@ import {
   onAuthStateChanged,
   updateProfile,
 } from "firebase/auth";
-import { doc, setDoc, serverTimestamp } from "firebase/firestore";
+import { doc, setDoc, getDoc, serverTimestamp } from "firebase/firestore";
 import { auth, db, googleProvider } from "../firebase";
 
 const AuthContext = createContext();
@@ -19,15 +19,40 @@ export function useAuth() {
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [firestoreProfile, setFirestoreProfile] = useState(null);
 
   // Listen for auth state changes
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
+      if (currentUser) {
+        await fetchProfile(currentUser.uid);
+      } else {
+        setFirestoreProfile(null);
+      }
       setLoading(false);
     });
     return unsubscribe;
   }, []);
+
+  // Fetch Firestore profile
+  async function fetchProfile(uid) {
+    try {
+      const docSnap = await getDoc(doc(db, "users", uid));
+      if (docSnap.exists()) {
+        setFirestoreProfile(docSnap.data());
+      }
+    } catch (err) {
+      console.error("Error fetching profile:", err);
+    }
+  }
+
+  // Refresh profile (call after updates in SettingsPage)
+  async function refreshProfile() {
+    if (user) {
+      await fetchProfile(user.uid);
+    }
+  }
 
   // Login with email and password
   async function login(email, password) {
@@ -39,22 +64,22 @@ export function AuthProvider({ children }) {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     const newUser = userCredential.user;
 
-    // Set display name on the Firebase Auth profile
     const displayName = profileData.middleName
       ? `${profileData.firstName} ${profileData.middleName} ${profileData.lastName}`
       : `${profileData.firstName} ${profileData.lastName}`;
 
     await updateProfile(newUser, { displayName });
 
-    // Save full profile to Firestore
     await setDoc(doc(db, "users", newUser.uid), {
       firstName: profileData.firstName,
       middleName: profileData.middleName || "",
       lastName: profileData.lastName,
       email: email,
+      photoURL: "",
       createdAt: serverTimestamp(),
     });
 
+    await fetchProfile(newUser.uid);
     return userCredential;
   }
 
@@ -63,7 +88,6 @@ export function AuthProvider({ children }) {
     const result = await signInWithPopup(auth, googleProvider);
     const googleUser = result.user;
 
-    // Save to Firestore if first time
     await setDoc(
       doc(db, "users", googleUser.uid),
       {
@@ -71,26 +95,31 @@ export function AuthProvider({ children }) {
         middleName: "",
         lastName: googleUser.displayName?.split(" ").slice(1).join(" ") || "",
         email: googleUser.email,
+        photoURL: googleUser.photoURL || "",
         createdAt: serverTimestamp(),
       },
       { merge: true }
     );
 
+    await fetchProfile(googleUser.uid);
     return result;
   }
 
   // Logout
   function logout() {
+    setFirestoreProfile(null);
     return signOut(auth);
   }
 
   const value = {
     user,
     loading,
+    firestoreProfile,
     login,
     register,
     loginWithGoogle,
     logout,
+    refreshProfile,
   };
 
   return (
