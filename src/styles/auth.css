@@ -117,6 +117,38 @@
   letter-spacing: 1px;
 }
 
+/* Forgot password link */
+.forgot-password-link {
+  text-align: right;
+  margin: -8px 0 12px;
+}
+
+.forgot-password-link a {
+  font-size: 13px;
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.forgot-password-link a:hover {
+  text-decoration: underline;
+}
+
+/* Success message */
+.success-message {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.25);
+  border-radius: var(--radius-sm);
+  color: #86efac;
+  font-size: 13px;
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
 @media (max-width: 520px) {
   .auth-card {
     padding: 28px 20px;

@@ -13,6 +13,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import LoginPage from "../pages/LoginPage";
 import RegisterPage from "../pages/RegisterPage";
+import ForgotPasswordPage from "../pages/ForgotPasswordPage";
 import ContentPage from "../pages/ContentPage";
 import SettingsPage from "../pages/SettingsPage";
 import VerifyEmailPage from "../pages/VerifyEmailPage";
@@ -40,6 +41,10 @@ export default function AppRoutes() {
       <Route
         path="/register"
         element={user ? <Navigate to={authRedirect} replace /> : <RegisterPage />}
+      />
+      <Route
+        path="/forgot-password"
+        element={user ? <Navigate to={authRedirect} replace /> : <ForgotPasswordPage />}
       />
 
       {/* Email verification page — only for logged-in but unverified users */}
