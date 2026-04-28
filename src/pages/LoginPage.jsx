@@ -9,6 +9,8 @@
 
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { sendEmailVerification } from "firebase/auth";
+import { auth } from "../firebase";
 import { useAuth } from "../context/AuthContext";
 import { getErrorMessage } from "../utils/errorMessages";
 import { validateLoginInputs } from "../utils/validators";
@@ -52,8 +54,17 @@ export default function LoginPage() {
 
     setIsLoading(true);
     try {
-      await login(email.trim(), password);
-      navigate("/content");
+      const result = await login(email.trim(), password);
+      const loggedInUser = result.user;
+
+      // Check if email is verified
+      if (!loggedInUser.emailVerified) {
+        // Re-send verification email in case the old one expired
+        try { await sendEmailVerification(loggedInUser); } catch (_) {}
+        navigate("/verify-email");
+      } else {
+        navigate("/content");
+      }
     } catch (err) {
       setError(getErrorMessage(err.code));
       setLockout(true);
@@ -68,7 +79,7 @@ export default function LoginPage() {
     setIsLoading(true);
     try {
       await loginWithGoogle();
-      navigate("/content");
+      navigate("/content"); // Google users are always verified
     } catch (err) {
       setError(getErrorMessage(err.code));
     } finally {

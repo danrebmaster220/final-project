@@ -91,7 +91,7 @@ export default function RegisterPage() {
         middleName: formData.middleName.trim(),
         lastName: formData.lastName.trim(),
       });
-      navigate("/content");
+      navigate("/verify-email");
     } catch (err) {
       setError(getErrorMessage(err.code));
     } finally {

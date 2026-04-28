@@ -9,7 +9,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useAuth } from "../context/AuthContext";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 import {
   updateProfile,
   updatePassword,
@@ -130,12 +130,12 @@ export default function SettingsPage() {
         ...(isBase64 ? {} : { photoURL: personalDraft.photoURL || null }),
       });
 
-      await updateDoc(doc(db, "users", user.uid), {
+      await setDoc(doc(db, "users", user.uid), {
         firstName: personalDraft.firstName.trim(),
         middleName: personalDraft.middleName.trim(),
         lastName: personalDraft.lastName.trim(),
         photoURL: personalDraft.photoURL || "",
-      });
+      }, { merge: true });
 
       setProfile({ ...personalDraft });
       setEditingPersonal(false);

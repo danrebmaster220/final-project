@@ -6,6 +6,7 @@ import {
   signOut,
   onAuthStateChanged,
   updateProfile,
+  sendEmailVerification,
 } from "firebase/auth";
 import { doc, setDoc, getDoc, serverTimestamp } from "firebase/firestore";
 import { auth, db, googleProvider } from "../firebase";
@@ -41,9 +42,13 @@ export function AuthProvider({ children }) {
       const docSnap = await getDoc(doc(db, "users", uid));
       if (docSnap.exists()) {
         setFirestoreProfile(docSnap.data());
+      } else {
+        console.warn("No Firestore profile found for uid:", uid);
+        setFirestoreProfile(null);
       }
     } catch (err) {
-      console.error("Error fetching profile:", err);
+      console.error("Error fetching profile (check Firestore rules):", err);
+      setFirestoreProfile(null);
     }
   }
 
@@ -80,6 +85,10 @@ export function AuthProvider({ children }) {
     });
 
     await fetchProfile(newUser.uid);
+
+    // Send email verification
+    await sendEmailVerification(newUser);
+
     return userCredential;
   }
 
@@ -88,18 +97,31 @@ export function AuthProvider({ children }) {
     const result = await signInWithPopup(auth, googleProvider);
     const googleUser = result.user;
 
-    await setDoc(
-      doc(db, "users", googleUser.uid),
-      {
+    // Check if user already has a Firestore profile (returning user)
+    const existingDoc = await getDoc(doc(db, "users", googleUser.uid));
+
+    if (existingDoc.exists()) {
+      // Returning user — only update name/email, preserve custom photoURL
+      await setDoc(
+        doc(db, "users", googleUser.uid),
+        {
+          firstName: googleUser.displayName?.split(" ")[0] || "",
+          lastName: googleUser.displayName?.split(" ").slice(1).join(" ") || "",
+          email: googleUser.email,
+        },
+        { merge: true }
+      );
+    } else {
+      // First-time Google user — create full profile
+      await setDoc(doc(db, "users", googleUser.uid), {
         firstName: googleUser.displayName?.split(" ")[0] || "",
         middleName: "",
         lastName: googleUser.displayName?.split(" ").slice(1).join(" ") || "",
         email: googleUser.email,
         photoURL: googleUser.photoURL || "",
         createdAt: serverTimestamp(),
-      },
-      { merge: true }
-    );
+      });
+    }
 
     await fetchProfile(googleUser.uid);
     return result;
