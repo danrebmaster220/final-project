@@ -1,4 +1,4 @@
-﻿
+
 
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
@@ -11,14 +11,19 @@ export default function ContentPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [lessonCompleted, setLessonCompleted] = useState(false);
 
-useEffect(() => {
+  useEffect(() => {
+    if (!user) {
+      setLessonCompleted(false);
+      return;
+    }
+    const key = `lesson_cia_triad_completed_${user.uid}`;
     function checkCompletion() {
-      setLessonCompleted(localStorage.getItem("lesson_cia_triad_completed") === "true");
+      setLessonCompleted(localStorage.getItem(key) === "true");
     }
     checkCompletion();
     window.addEventListener("focus", checkCompletion);
     return () => window.removeEventListener("focus", checkCompletion);
-  }, []);
+  }, [user]);
 
   const initial =
     user?.displayName?.charAt(0)?.toUpperCase() ||

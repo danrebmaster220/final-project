@@ -1,4 +1,4 @@
-﻿
+
 
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -231,10 +231,12 @@ const [answers, setAnswers] = useState({});
 
 const [completed, setCompleted] = useState(false);
 
-useEffect(() => {
-    const saved = localStorage.getItem("lesson_cia_triad_completed");
+  useEffect(() => {
+    if (!user) return;
+    const key = `lesson_cia_triad_completed_${user.uid}`;
+    const saved = localStorage.getItem(key);
     if (saved === "true") setCompleted(true);
-  }, []);
+  }, [user]);
 
   const isQuizStep = currentStep === TOTAL_STEPS;
   const progressPct = Math.round((currentStep / TOTAL_STEPS) * 100);
@@ -264,7 +266,8 @@ function goNext() {
     const passed = score / QUIZ_QUESTIONS.length >= 0.6;
     setSubmitted(true);
     if (passed) {
-      localStorage.setItem("lesson_cia_triad_completed", "true");
+      const key = `lesson_cia_triad_completed_${user.uid}`;
+      localStorage.setItem(key, "true");
       setCompleted(true);
     }
   }
