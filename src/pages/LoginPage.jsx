@@ -1,12 +1,3 @@
-/**
- * LoginPage — Email/password login with Google OAuth option.
- *
- * Security features:
- * - Input validation (email format, empty checks, length limits)
- * - Generic error messages (never reveals which field is wrong)
- * - 3-second lockout after failed attempt (brute-force mitigation)
- */
-
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { sendEmailVerification } from "firebase/auth";
@@ -19,7 +10,6 @@ import FormInput from "../components/FormInput";
 import GoogleButton from "../components/GoogleButton";
 import ErrorAlert from "../components/ErrorAlert";
 
-/* Lock icon for the auth card */
 const LockIcon = (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
@@ -59,7 +49,6 @@ export default function LoginPage() {
 
       // Check if email is verified
       if (!loggedInUser.emailVerified) {
-        // Re-send verification email in case the old one expired
         try { await sendEmailVerification(loggedInUser); } catch (_) {}
         navigate("/verify-email");
       } else {
@@ -79,7 +68,7 @@ export default function LoginPage() {
     setIsLoading(true);
     try {
       await loginWithGoogle();
-      navigate("/content"); // Google users are always verified
+      navigate("/content");
     } catch (err) {
       setError(getErrorMessage(err.code));
     } finally {

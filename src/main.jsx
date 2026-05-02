@@ -4,7 +4,7 @@ import { BrowserRouter } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import App from "./App.jsx";
 
-/* Styles — imported in order of specificity */
+/* Styles */
 import "./styles/global.css";
 import "./styles/components.css";
 import "./styles/auth.css";

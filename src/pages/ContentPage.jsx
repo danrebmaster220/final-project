@@ -1,5 +1,3 @@
-
-
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import { useAuth } from "../context/AuthContext";
@@ -18,12 +16,16 @@ export default function ContentPage() {
     }
     const key = `lesson_cia_triad_completed_${user.uid}`;
     function checkCompletion() {
+      if (firestoreProfile?.lessonProgress?.ciaTriadCompleted) {
+        setLessonCompleted(true);
+        return;
+      }
       setLessonCompleted(localStorage.getItem(key) === "true");
     }
     checkCompletion();
     window.addEventListener("focus", checkCompletion);
     return () => window.removeEventListener("focus", checkCompletion);
-  }, [user]);
+  }, [user, firestoreProfile]);
 
   const initial =
     user?.displayName?.charAt(0)?.toUpperCase() ||

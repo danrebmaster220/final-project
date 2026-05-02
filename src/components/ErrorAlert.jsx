@@ -1,7 +1,3 @@
-/**
- * ErrorAlert — Reusable error display with icon and shake animation.
- */
-
 export default function ErrorAlert({ message }) {
   if (!message) return null;
 

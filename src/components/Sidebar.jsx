@@ -1,15 +1,3 @@
-/**
- * Sidebar — Collapsible sidebar navigation.
- *
- * - Collapsed by default (icon-only, ~64px)
- * - Expands on hover (~240px), content adjusts with it
- * - Hamburger menu only on mobile
- * - Centered brand with divider below
- * - Settings nav item
- * - Profile icon + name above logout at the bottom
- * - Logout with confirmation modal
- */
-
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
@@ -48,7 +36,7 @@ export default function Sidebar() {
 
   return (
     <>
-      {/* Mobile hamburger button (only visible on small screens) */}
+      {/* Mobile hamburger menu button */}
       <button
         className={`mobile-menu-btn${mobileOpen ? " mobile-menu-btn--open" : ""}`}
         onClick={() => setMobileOpen((prev) => !prev)}
@@ -71,7 +59,7 @@ export default function Sidebar() {
         onMouseEnter={() => setExpanded(true)}
         onMouseLeave={() => setExpanded(false)}
       >
-        {/* Brand area — centered when expanded */}
+        {/* Logo */}
         <div className="sidebar-top">
           <div className="sidebar-brand">
             <img src={spavionLogo} alt="Spavion" className="sidebar-brand-logo" />
@@ -79,10 +67,10 @@ export default function Sidebar() {
           </div>
         </div>
 
-        {/* Divider below brand */}
+        {/* Divider */}
         <div className="sidebar-divider"></div>
 
-        {/* Nav items */}
+        {/* Sidebar navigation */}
         <nav className="sidebar-nav">
           <button
             className={`sidebar-nav-item${location.pathname === "/content" ? " sidebar-nav-item--active" : ""}`}
@@ -107,13 +95,12 @@ export default function Sidebar() {
           </button>
         </nav>
 
-        {/* Spacer pushes bottom section down */}
         <div className="sidebar-spacer"></div>
 
-        {/* Divider above profile */}
+        {/* Divider */}
         <div className="sidebar-divider"></div>
 
-        {/* Profile section (above logout) */}
+        {/* Profile section */}
         <div className="sidebar-profile">
           {profilePhoto ? (
             <img src={profilePhoto} alt="" className="sidebar-avatar-img" />
@@ -134,7 +121,7 @@ export default function Sidebar() {
         </button>
       </aside>
 
-      {/* Logout Confirmation Modal */}
+      {/* Logout Confirma modal */}
       {showLogoutModal && (
         <div className="modal-overlay" onClick={() => setShowLogoutModal(false)}>
           <div className="modal" onClick={(e) => e.stopPropagation()}>

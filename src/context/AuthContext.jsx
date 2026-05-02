@@ -22,7 +22,6 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const [firestoreProfile, setFirestoreProfile] = useState(null);
 
-  // Listen for auth state changes
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
@@ -36,7 +35,6 @@ export function AuthProvider({ children }) {
     return unsubscribe;
   }, []);
 
-  // Fetch Firestore profile
   async function fetchProfile(uid) {
     try {
       const docSnap = await getDoc(doc(db, "users", uid));
@@ -52,7 +50,6 @@ export function AuthProvider({ children }) {
     }
   }
 
-  // Refresh profile (call after updates in SettingsPage)
   async function refreshProfile() {
     if (user) {
       await fetchProfile(user.uid);
@@ -97,11 +94,9 @@ export function AuthProvider({ children }) {
     const result = await signInWithPopup(auth, googleProvider);
     const googleUser = result.user;
 
-    // Check if user already has a Firestore profile (returning user)
     const existingDoc = await getDoc(doc(db, "users", googleUser.uid));
 
     if (existingDoc.exists()) {
-      // Returning user — only update name/email, preserve custom photoURL
       await setDoc(
         doc(db, "users", googleUser.uid),
         {
@@ -112,7 +107,6 @@ export function AuthProvider({ children }) {
         { merge: true }
       );
     } else {
-      // First-time Google user — create full profile
       await setDoc(doc(db, "users", googleUser.uid), {
         firstName: googleUser.displayName?.split(" ")[0] || "",
         middleName: "",

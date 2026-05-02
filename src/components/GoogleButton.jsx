@@ -1,7 +1,3 @@
-/**
- * GoogleButton — Styled Google OAuth sign-in button.
- */
-
 export default function GoogleButton({ onClick, disabled }) {
   return (
     <button

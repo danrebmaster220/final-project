@@ -1,7 +1,3 @@
-/* ============================
-   Global Styles & Variables
-   ============================ */
-
 :root {
   --primary: #6366f1;
   --primary-hover: #4f46e5;
@@ -51,13 +47,11 @@ body {
   overflow-x: hidden;
 }
 
-/* ── Atmospheric background glows (fixed, full-page) ── */
 #root {
   min-height: 100vh;
   position: relative;
 }
 
-/* Static base layer — gently pulses */
 #root::before {
   content: "";
   position: fixed;
@@ -73,7 +67,6 @@ body {
   animation: bgPulse 18s ease-in-out infinite alternate;
 }
 
-/* Drifting pink/violet accent orb */
 #root::after {
   content: "";
   position: fixed;
@@ -99,17 +92,12 @@ body {
   100% { transform: translate(-10px, 20px); opacity: 0.85; }
 }
 
-/* All page content must sit above the fixed background */
 .app-layout,
 .auth-outer,
 .loading-screen {
   position: relative;
   z-index: 1;
 }
-
-/* ============================
-   Loading Screen
-   ============================ */
 
 .loading-screen {
   min-height: 100vh;
@@ -136,11 +124,6 @@ body {
   to { transform: rotate(360deg); }
 }
 
-/* ============================
-   Global Floating Particles
-   ============================ */
-
-/* Reusable floating dot keyframe – used by hero-particle & cel-glow */
 @keyframes floatUp {
   0%   { transform: translateY(0)   scale(1);   opacity: 0; }
   20%  { opacity: 1; }

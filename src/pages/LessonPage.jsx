@@ -1,9 +1,9 @@
-
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import { useAuth } from "../context/AuthContext";
+import { doc, setDoc, serverTimestamp } from "firebase/firestore";
+import { db } from "../firebase";
 
 const STEPS = [
   {
@@ -221,7 +221,7 @@ function StepIcon({ type }) {
 
 export default function LessonPage() {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, firestoreProfile, refreshProfile } = useAuth();
 
 const [currentStep, setCurrentStep] = useState(1);
 
@@ -232,11 +232,17 @@ const [answers, setAnswers] = useState({});
 const [completed, setCompleted] = useState(false);
 
   useEffect(() => {
-    if (!user) return;
+    if (!user) {
+      setCompleted(false);
+      return;
+    }
+    if (firestoreProfile?.lessonProgress?.ciaTriadCompleted) {
+      setCompleted(true);
+      return;
+    }
     const key = `lesson_cia_triad_completed_${user.uid}`;
-    const saved = localStorage.getItem(key);
-    if (saved === "true") setCompleted(true);
-  }, [user]);
+    setCompleted(localStorage.getItem(key) === "true");
+  }, [user, firestoreProfile]);
 
   const isQuizStep = currentStep === TOTAL_STEPS;
   const progressPct = Math.round((currentStep / TOTAL_STEPS) * 100);
@@ -256,7 +262,7 @@ function goNext() {
     setQuizError("");
   }
 
-  function handleSubmit() {
+  async function handleSubmit() {
     const unanswered = QUIZ_QUESTIONS.filter((q) => answers[q.id] === undefined);
     if (unanswered.length > 0) {
       setQuizError(`Please answer all ${QUIZ_QUESTIONS.length} questions before submitting.`);
@@ -266,9 +272,27 @@ function goNext() {
     const passed = score / QUIZ_QUESTIONS.length >= 0.6;
     setSubmitted(true);
     if (passed) {
+      if (!user) return;
       const key = `lesson_cia_triad_completed_${user.uid}`;
       localStorage.setItem(key, "true");
       setCompleted(true);
+      try {
+        await setDoc(
+          doc(db, "users", user.uid),
+          {
+            lessonProgress: {
+              ciaTriadCompleted: true,
+              ciaTriadCompletedAt: serverTimestamp(),
+            },
+          },
+          { merge: true }
+        );
+        if (refreshProfile) {
+          await refreshProfile();
+        }
+      } catch (err) {
+        console.error("Failed to save lesson progress:", err);
+      }
     }
   }
 

@@ -1,7 +1,3 @@
-/**
- * AuthCard — Reusable card wrapper for login/register pages.
- */
-
 export default function AuthCard({ icon, title, subtitle, wide = false, children }) {
   return (
     <div className={`auth-card${wide ? " auth-card--wide" : ""}`}>

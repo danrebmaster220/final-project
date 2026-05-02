@@ -1,14 +1,3 @@
-/**
- * AppRoutes — Centralized route definitions.
- *
- * Flow for email/password users:
- *   Register → /verify-email (wait for verification) → /content
- *   Login (unverified) → /verify-email → /content
- *   Login (verified) → /content
- *
- * Google OAuth users skip verification (always emailVerified=true).
- */
-
 import { Routes, Route, Navigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import LoginPage from "../pages/LoginPage";
@@ -23,7 +12,6 @@ import ProtectedRoute from "../components/ProtectedRoute";
 export default function AppRoutes() {
   const { user } = useAuth();
 
-  // Determine where logged-in users should go
   const getAuthRedirect = () => {
     if (!user) return null;
     if (!user.emailVerified) return "/verify-email";
@@ -34,7 +22,7 @@ export default function AppRoutes() {
 
   return (
     <Routes>
-      {/* Public routes — redirect to appropriate page if already logged in */}
+      {/* Public routes */}
       <Route
         path="/"
         element={user ? <Navigate to={authRedirect} replace /> : <LoginPage />}
@@ -48,7 +36,7 @@ export default function AppRoutes() {
         element={user ? <Navigate to={authRedirect} replace /> : <ForgotPasswordPage />}
       />
 
-      {/* Email verification page — only for logged-in but unverified users */}
+      {/* Email verification page */}
       <Route
         path="/verify-email"
         element={
@@ -62,7 +50,7 @@ export default function AppRoutes() {
         }
       />
 
-      {/* Protected routes — require login AND email verification */}
+      {/* Protected routes */}
       <Route
         path="/content"
         element={
@@ -88,7 +76,7 @@ export default function AppRoutes() {
         }
       />
 
-      {/* Catch-all */}
+      {/* Not found */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );

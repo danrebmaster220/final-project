@@ -1,16 +1,9 @@
-/* ============================
-   App Layout (Sidebar + Content)
-   ============================ */
-
 .app-layout {
   display: flex;
   min-height: 100vh;
 }
 
-/* ============================
-   Sidebar
-   ============================ */
-
+/* Sidebar styles */
 .sidebar {
   position: relative;
   height: 100vh;
@@ -32,14 +25,12 @@
   z-index: 100;
 }
 
-/* Expand on hover — content pushes because it's in flow */
 .sidebar:hover,
 .sidebar.sidebar--expanded {
   width: 240px;
   min-width: 240px;
 }
 
-/* Hide labels when collapsed, show on expand */
 .sidebar-label {
   opacity: 0;
   white-space: nowrap;
@@ -52,12 +43,10 @@
   opacity: 1;
 }
 
-/* Mobile hamburger — hidden on desktop */
 .mobile-menu-btn {
   display: none;
 }
 
-/* Sidebar top / brand */
 .sidebar-top {
   flex-shrink: 0;
 }
@@ -71,7 +60,6 @@
   justify-content: flex-start;
 }
 
-/* Center brand when expanded */
 .sidebar:hover .sidebar-brand,
 .sidebar.sidebar--expanded .sidebar-brand {
   justify-content: center;
@@ -92,7 +80,6 @@
   letter-spacing: -0.3px;
 }
 
-/* Nav area */
 .sidebar-nav {
   flex-shrink: 0;
   display: flex;
@@ -101,7 +88,6 @@
   margin-top: 4px;
 }
 
-/* Nav item */
 .sidebar-nav-item {
   display: flex;
   align-items: center;
@@ -121,7 +107,6 @@
   position: relative;
 }
 
-/* Left neon indicator bar */
 .sidebar-nav-item::before {
   content: "";
   position: absolute;
@@ -168,12 +153,10 @@
   min-width: 20px;
 }
 
-/* Spacer */
 .sidebar-spacer {
   flex: 1;
 }
 
-/* Divider above profile */
 .sidebar-divider {
   height: 1px;
   background: linear-gradient(90deg, transparent, rgba(99,102,241,0.3), transparent);
@@ -181,7 +164,6 @@
   flex-shrink: 0;
 }
 
-/* Profile section (above logout) */
 .sidebar-profile {
   display: flex;
   align-items: center;
@@ -217,7 +199,6 @@
   color: var(--text-primary);
 }
 
-/* Logout button */
 .sidebar-logout {
   display: flex;
   align-items: center;
@@ -249,22 +230,6 @@
   min-width: 20px;
 }
 
-/* ============================
-   Main Content Area
-   ============================ */
-
-.app-content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  min-height: 100vh;
-  min-width: 0;
-  position: relative;
-  background: transparent;
-}
-
-/* Floating profile icon (top-right, no header bar) */
 .floating-profile {
   position: absolute;
   top: calc(16px + env(safe-area-inset-top));
@@ -293,10 +258,6 @@
   cursor: pointer;
 }
 
-/* ============================
-   Dashboard Main Layout
-   ============================ */
-
 .content-main {
   flex: 1;
   display: flex;
@@ -311,10 +272,6 @@
   height: 100vh;
   overflow: hidden;
 }
-
-/* ============================
-   Hero / Welcome Section
-   ============================ */
 
 .dashboard-hero {
   position: relative;
@@ -332,7 +289,6 @@
   );
 }
 
-/* Spotlight radial glows */
 .hero-glow {
   position: absolute;
   border-radius: 50%;
@@ -372,7 +328,6 @@
   100% { opacity: 0.28; transform: translateX(-50%) scale(0.96); }
 }
 
-/* Floating decorative particles */
 .hero-particle {
   position: absolute;
   border-radius: 50%;
@@ -428,7 +383,6 @@
   padding: 0 32px;
 }
 
-/* Eyebrow pill */
 .hero-eyebrow {
   display: inline-flex;
   align-items: center;
@@ -459,7 +413,6 @@
   50%       { opacity: 0.5; box-shadow: 0 0 14px #38bdf8; }
 }
 
-/* Hero title */
 .hero-title {
   font-size: clamp(24px, 3vw, 40px);
   font-weight: 800;
@@ -476,7 +429,6 @@
   background-clip: text;
 }
 
-/* Hero subtitle */
 .hero-subtitle {
   font-size: 14px;
   color: var(--text-secondary);
@@ -543,10 +495,7 @@
   color: var(--text-muted);
 }
 
-/* ============================
-   Lessons Section
-   ============================ */
-
+/* Lesson styles */
 .dashboard-lessons {
   flex: 0 0 50%;
   padding: 24px 48px;
@@ -586,14 +535,10 @@
   gap: 16px;
 }
 
-/* ============================
-   Lesson Card — Compact Horizontal (Glassmorphism)
-   ============================ */
-
 .lesson-card {
   position: relative;
   display: flex;
-  flex-direction: row;          /* horizontal layout */
+  flex-direction: row;
   align-items: stretch;
   width: 100%;
   max-width: 680px;
@@ -622,7 +567,6 @@
   animation: borderGlow 3s ease-in-out infinite;
 }
 
-/* Neon glow accent — left side for horizontal card */
 .lesson-card-glow {
   position: absolute;
   top: 0;
@@ -633,7 +577,6 @@
   z-index: 1;
 }
 
-/* Illustration panel — left column */
 .lesson-card-illustration {
   position: relative;
   width: 160px;
@@ -649,7 +592,6 @@
   flex-shrink: 0;
 }
 
-/* Animated grid lines in illustration background */
 .lesson-card-illustration::before {
   content: "";
   position: absolute;
@@ -661,7 +603,6 @@
   pointer-events: none;
 }
 
-/* Shield wrapper — smaller for compact card */
 .shield-wrapper {
   position: relative;
   width: 80px;
@@ -672,7 +613,6 @@
   z-index: 2;
 }
 
-/* Animated ring halos */
 .shield-ring {
   position: absolute;
   border-radius: 50%;
@@ -710,7 +650,6 @@
   50%       { transform: translateY(-5px); }
 }
 
-/* Floating glow dots on illustration */
 .shield-dot {
   position: absolute;
   width: 4px;
@@ -739,7 +678,6 @@
   50%       { transform: translateY(-6px); opacity: 1; }
 }
 
-/* Card body — fills remaining space */
 .lesson-card-body {
   padding: 18px 20px;
   display: flex;
@@ -813,7 +751,6 @@
   50%       { opacity: 1;   transform: scale(1.35); }
 }
 
-/* Card title */
 .lesson-card-title {
   font-size: 17px;
   font-weight: 800;
@@ -822,7 +759,6 @@
   line-height: 1.2;
 }
 
-/* Card description */
 .lesson-card-desc {
   font-size: 12.5px;
   color: var(--text-secondary);
@@ -838,7 +774,6 @@
   font-weight: 600;
 }
 
-/* Metadata row */
 .lesson-meta {
   display: flex;
   align-items: center;
@@ -905,7 +840,6 @@
   font-weight: 500;
 }
 
-/* CTA Button — compact */
 .btn-start-lesson {
   display: inline-flex;
   align-items: center;
@@ -972,10 +906,7 @@
   transform: translateX(3px);
 }
 
-/* ============================
-   Logout Confirmation Modal
-   ============================ */
-
+/* Logout modal */
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -1084,18 +1015,11 @@
   box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
 }
 
-/* ============================
-   Mobile Overlay
-   ============================ */
-
 .sidebar-overlay {
   display: none;
 }
 
-/* ============================
-   Responsive (Mobile)
-   ============================ */
-
+/* Mobile styles */
 @media (max-width: 768px) {
   /* Show hamburger on mobile */
   .mobile-menu-btn {
@@ -1130,7 +1054,6 @@
     left: calc(240px - 40px - 12px + env(safe-area-inset-left));
   }
 
-  /* Sidebar off-screen by default on mobile */
   .sidebar {
     position: fixed;
     left: -260px;
@@ -1144,21 +1067,18 @@
     opacity: 1;
   }
 
-  /* Disable hover expand on mobile */
   .sidebar:hover {
     width: 240px;
     min-width: 240px;
     left: -260px;
   }
 
-  /* Show sidebar when mobile menu is open */
   .sidebar.sidebar--mobile-open,
   .sidebar.sidebar--mobile-open:hover {
     left: 0;
     box-shadow: 4px 0 20px rgba(0, 0, 0, 0.4);
   }
 
-  /* Overlay */
   .sidebar-overlay {
     display: block;
     position: fixed;
@@ -1167,7 +1087,6 @@
     z-index: 99;
   }
 
-  /* Content takes full width */
   .app-content {
     margin-left: 0;
   }

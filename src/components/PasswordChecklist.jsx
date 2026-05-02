@@ -1,8 +1,3 @@
-/**
- * PasswordChecklist — Real-time password requirement indicators.
- * Shows a checklist that updates as the user types.
- */
-
 export default function PasswordChecklist({ password = "", confirmPassword = null }) {
   const checks = [
     { label: "At least 8 characters", met: password.length >= 8 },

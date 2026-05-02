@@ -1,8 +1,4 @@
-/* ============================
-   Lesson Flow Page
-   ============================ */
-
-/* ── Shared lesson layout ── */
+/* Lesson stles */
 .lesson-main {
   display: flex;
   flex-direction: column;
@@ -15,10 +11,6 @@
   background: transparent;
   width: 100%;
 }
-
-/* ============================
-   Top Progress Bar
-   ============================ */
 
 .lesson-topbar {
   width: 100%;
@@ -87,10 +79,6 @@
   100% { box-shadow: 0 0 16px rgba(99,102,241,0.95),0 0 32px rgba(56,189,248,0.5), 0 0 48px rgba(129,140,248,0.2); }
 }
 
-/* ============================
-   Step Breadcrumbs
-   ============================ */
-
 .lesson-breadcrumbs {
   display: flex;
   align-items: center;
@@ -151,20 +139,12 @@
   height: 14px;
 }
 
-/* ============================
-   Content Wrapper
-   ============================ */
-
 .lesson-content-wrap {
   width: 100%;
   max-width: 800px;
   padding: 24px 32px;
   flex: 1;
 }
-
-/* ============================
-   Lesson Content Card (Glassmorphism)
-   ============================ */
 
 .lesson-content-card {
   position: relative;
@@ -192,7 +172,6 @@
     0 0 0 1px rgba(255, 255, 255, 0.07) inset;
 }
 
-/* Subtle inner reflection at top */
 .lesson-content-card::after {
   content: "";
   position: absolute;
@@ -216,7 +195,6 @@
   }
 }
 
-/* ── Step header ── */
 .lesson-step-header {
   display: flex;
   align-items: center;
@@ -266,7 +244,6 @@
   margin-bottom: 24px;
 }
 
-/* ── Step body text ── */
 .lesson-step-body {
   display: flex;
   flex-direction: column;
@@ -279,7 +256,6 @@
   line-height: 1.75;
 }
 
-/* ── List blocks ── */
 .lesson-step-list-block {
   border-radius: 12px;
   padding: 16px 18px;
@@ -346,10 +322,7 @@
   box-shadow: 0 0 6px rgba(52, 211, 153, 0.4);
 }
 
-/* ============================
-   Quiz Card
-   ============================ */
-
+/* Quiz card */
 .quiz-card {
   padding: 36px 40px 40px;
 }
@@ -408,7 +381,7 @@
   font-weight: 600;
 }
 
-/* ── Questions ── */
+/* Quiz Questions */
 .quiz-questions {
   display: flex;
   flex-direction: column;
@@ -434,7 +407,7 @@
   font-weight: 800;
 }
 
-/* ── Options ── */
+/* Quiz options */
 .quiz-options {
   display: flex;
   flex-direction: column;
@@ -501,7 +474,7 @@
   line-height: 1.55;
 }
 
-/* ── Error ── */
+/* Error message */
 .quiz-error {
   display: flex;
   align-items: center;
@@ -521,7 +494,6 @@
   flex-shrink: 0;
 }
 
-/* ── Submit button ── */
 .btn-submit-quiz {
   display: inline-flex;
   align-items: center;
@@ -576,10 +548,6 @@
   height: 16px;
 }
 
-/* ============================
-   Bottom Navigation
-   ============================ */
-
 .lesson-nav {
   display: flex;
   align-items: center;
@@ -590,7 +558,6 @@
   gap: 12px;
 }
 
-/* Previous (ghost) */
 .btn-lesson-prev {
   display: inline-flex;
   align-items: center;
@@ -623,7 +590,6 @@
   height: 15px;
 }
 
-/* Next (glowing primary) */
 .btn-lesson-next {
   display: inline-flex;
   align-items: center;
@@ -680,10 +646,6 @@
 .btn-lesson-next:hover svg {
   transform: translateX(3px);
 }
-
-/* ============================
-   Celebration / Completion State
-   ============================ */
 
 .celebration-wrap {
   position: relative;
@@ -778,7 +740,6 @@
   font-weight: 600;
 }
 
-/* Score display */
 .cel-score {
   display: flex;
   align-items: baseline;
@@ -811,7 +772,6 @@
   align-self: center;
 }
 
-/* Celebration progress bar */
 .cel-progress-bar {
   height: 6px;
   background: rgba(255, 255, 255, 0.07);
@@ -835,7 +795,6 @@
   margin-bottom: 32px;
 }
 
-/* Actions */
 .cel-actions {
   display: flex;
   justify-content: center;
@@ -843,11 +802,6 @@
   gap: 12px;
 }
 
-/* ============================
-   Fail State Styles
-   ============================ */
-
-/* Red glow blob */
 .cel-glow--red {
   width: 500px;
   height: 400px;
@@ -858,7 +812,6 @@
   animation: heroPulse 6s ease-in-out infinite alternate;
 }
 
-/* Red-tinted card */
 .fail-card {
   border-color: rgba(239, 68, 68, 0.25);
 }
@@ -867,7 +820,6 @@
   border-color: rgba(239, 68, 68, 0.4);
 }
 
-/* Red accent line at top of fail card */
 .fail-card-glow {
   position: absolute;
   top: 0;
@@ -878,7 +830,6 @@
   z-index: 1;
 }
 
-/* Red score number */
 .fail-score-num {
   background: linear-gradient(135deg, #fca5a5, #f87171) !important;
   -webkit-background-clip: text !important;
@@ -886,7 +837,6 @@
   background-clip: text !important;
 }
 
-/* Fail title */
 .fail-title {
   background: linear-gradient(135deg, #f1f5f9 30%, #fca5a5 100%) !important;
   -webkit-background-clip: text !important;
@@ -894,13 +844,11 @@
   background-clip: text !important;
 }
 
-/* Red progress bar fill */
 .fail-progress-fill {
   background: linear-gradient(90deg, #ef4444, #f97316) !important;
   box-shadow: 0 0 10px rgba(239, 68, 68, 0.5) !important;
 }
 
-/* Passing threshold marker */
 .fail-threshold {
   margin-bottom: 4px;
 }
@@ -942,12 +890,10 @@
   letter-spacing: 0.04em;
 }
 
-/* Fail actions row */
 .fail-actions {
   gap: 10px;
 }
 
-/* Retake Quiz button */
 .btn-retake {
   display: inline-flex;
   align-items: center;
@@ -1059,10 +1005,7 @@
   height: 16px;
 }
 
-/* ============================
-   Responsive
-   ============================ */
-
+/* Mobile styles */
 @media (max-width: 768px) {
   .lesson-topbar-inner {
     padding: 12px 20px 0;

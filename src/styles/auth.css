@@ -1,7 +1,5 @@
-/* ============================
-   Auth Pages (Login & Register)
-   ============================ */
 
+/* Auth page styles */
 .auth-page {
   min-height: 100vh;
   display: flex;
@@ -34,7 +32,6 @@
   overflow: hidden;
 }
 
-/* Top neon accent line */
 .auth-card::before {
   content: "";
   position: absolute;
@@ -60,7 +57,7 @@
   }
 }
 
-/* Header */
+/* header */
 .auth-header {
   text-align: center;
   margin-bottom: 28px;
@@ -185,10 +182,8 @@
   }
 }
 
-/* ============================
-   Verify Email Page
-   ============================ */
 
+/* Verify email page */
 .verify-card {
   width: 100%;
   max-width: 460px;
@@ -272,7 +267,6 @@
   opacity: 0.7;
 }
 
-/* Polling indicator */
 .verify-polling {
   display: flex;
   align-items: center;
@@ -297,7 +291,7 @@
   50%       { opacity: 1;   transform: scale(1.3); box-shadow: 0 0 14px #818cf8, 0 0 28px rgba(129,140,248,0.4); }
 }
 
-/* Actions */
+/* Action button */
 .verify-actions {
   display: flex;
   flex-direction: column;

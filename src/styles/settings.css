@@ -35,7 +35,6 @@
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* Top neon accent line on each card */
 .settings-section::before {
   content: "";
   position: absolute;
@@ -96,7 +95,6 @@
   box-shadow: 0 0 12px rgba(99, 102, 241, 0.2);
 }
 
-/* Cancel / Save buttons */
 .section-actions {
   display: flex;
   gap: 8px;
@@ -176,7 +174,6 @@
   margin-top: 4px;
 }
 
-/* Profile photo section */
 .profile-photo-section {
   display: flex;
   flex-direction: column;
@@ -263,7 +260,6 @@
   margin-bottom: 16px;
 }
 
-/* Google badge */
 .badge-google {
   font-size: 12px;
   color: var(--text-muted);
@@ -279,7 +275,6 @@
   line-height: 1.6;
 }
 
-/* Topbar avatar image */
 .topbar-avatar-img {
   width: 36px;
   height: 36px;
@@ -287,7 +282,6 @@
   object-fit: cover;
 }
 
-/* Sidebar avatar image */
 .sidebar-avatar-img {
   width: 36px;
   height: 36px;
@@ -296,10 +290,7 @@
   object-fit: cover;
 }
 
-/* ============================
-   Responsive
-   ============================ */
-
+/* Mobile styles */
 @media (max-width: 768px) {
   .settings-page {
     padding: calc(72px + env(safe-area-inset-top)) 16px 20px;

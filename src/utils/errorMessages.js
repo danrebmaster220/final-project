@@ -1,8 +1,3 @@
-/**
- * Maps Firebase Auth error codes to user-friendly, secure messages.
- * Never reveals whether the email exists or specific internal details.
- */
-
 const ERROR_MAP = {
   // Login errors
   "auth/user-not-found": "Invalid email or password.",

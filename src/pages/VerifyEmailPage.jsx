@@ -1,13 +1,3 @@
-/**
- * VerifyEmailPage — Shown to users who registered with email/password
- * but haven't verified their email yet.
- *
- * Features:
- * - Auto-detection: polls every 3 seconds, auto-redirects when verified
- * - Resend button with 60-second cooldown
- * - Logout option to return to login page
- */
-
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { sendEmailVerification } from "firebase/auth";
@@ -23,7 +13,6 @@ export default function VerifyEmailPage() {
   const [resendError, setResendError] = useState("");
   const intervalRef = useRef(null);
 
-  // Poll every 3 seconds to check if email has been verified
   useEffect(() => {
     intervalRef.current = setInterval(async () => {
       if (auth.currentUser) {
@@ -38,7 +27,6 @@ export default function VerifyEmailPage() {
     return () => clearInterval(intervalRef.current);
   }, [navigate]);
 
-  // Cooldown timer
   useEffect(() => {
     if (resendCooldown <= 0) return;
     const timer = setTimeout(() => setResendCooldown((c) => c - 1), 1000);
@@ -74,7 +62,6 @@ export default function VerifyEmailPage() {
   return (
     <div className="auth-page">
       <div className="verify-card">
-        {/* Animated envelope icon */}
         <div className="verify-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
             <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
@@ -96,13 +83,11 @@ export default function VerifyEmailPage() {
           <span className="verify-subtext">This page will automatically redirect once verified.</span>
         </p>
 
-        {/* Polling indicator */}
         <div className="verify-polling">
           <div className="polling-dot"></div>
           <span>Waiting for verification...</span>
         </div>
 
-        {/* Success / Error messages */}
         {resendSuccess && <div className="success-message">{resendSuccess}</div>}
         {resendError && (
           <div className="error-message" role="alert">
@@ -115,7 +100,6 @@ export default function VerifyEmailPage() {
           </div>
         )}
 
-        {/* Action buttons */}
         <div className="verify-actions">
           <button
             className="btn btn-primary"

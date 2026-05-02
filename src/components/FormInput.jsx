@@ -1,7 +1,3 @@
-/**
- * FormInput — Reusable labeled input field.
- */
-
 export default function FormInput({
   id,
   label,

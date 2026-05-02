@@ -1,10 +1,3 @@
-/**
- * RegisterPage — Multi-step account creation.
- *
- * Step 1: Personal info (First Name, Middle Name optional, Last Name)
- * Step 2: Credentials (Email, Password with live checklist, Confirm Password with match)
- */
-
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
@@ -15,7 +8,6 @@ import FormInput from "../components/FormInput";
 import ErrorAlert from "../components/ErrorAlert";
 import PasswordChecklist from "../components/PasswordChecklist";
 
-/* User-plus icon for the auth card */
 const UserPlusIcon = (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
@@ -107,7 +99,6 @@ export default function RegisterPage() {
   return (
     <div className="auth-page">
       <AuthCard icon={UserPlusIcon} title="Create Account" subtitle={stepSubtitle} wide>
-        {/* Step indicator */}
         <div className="step-indicator">
           <div className={`step-dot ${step >= 1 ? "step-active" : ""}`}>1</div>
           <div className="step-line"></div>

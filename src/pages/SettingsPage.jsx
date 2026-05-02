@@ -1,5 +1,3 @@
-
-
 import { useState, useEffect, useRef } from "react";
 import { useAuth } from "../context/AuthContext";
 import { doc, getDoc, setDoc } from "firebase/firestore";
@@ -354,7 +352,7 @@ function validatePassword(pw) {
             </div>
           </section>
 
-          {/* ===================== Security ===================== */}
+          {/* Security */}
           <section className="settings-section">
             <div className="section-header">
               <h2>Security</h2>

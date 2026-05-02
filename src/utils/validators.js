@@ -1,7 +1,3 @@
-/**
- * Input validation utilities for auth forms.
- */
-
 const NAME_REGEX = /^[a-zA-Z\s'-]+$/;
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
