@@ -1,11 +1,4 @@
-/**
- * SettingsPage — User settings with Personal Information and Security sections.
- *
- * - Profile image stored as base64 data URL in Firestore (avoids Firebase Storage upgrade)
- * - Edit/Cancel/Save toggle for each section
- * - Password change via Firebase Auth reauthenticateWithCredential + updatePassword
- * - Google-only users can link a password to enable email/password login
- */
+
 
 import { useState, useEffect, useRef } from "react";
 import { useAuth } from "../context/AuthContext";
@@ -26,8 +19,7 @@ export default function SettingsPage() {
   const { user, refreshProfile, firestoreProfile } = useAuth();
   const fileInputRef = useRef(null);
 
-  // Personal info state
-  const [profile, setProfile] = useState({
+const [profile, setProfile] = useState({
     firstName: "",
     middleName: "",
     lastName: "",
@@ -40,8 +32,7 @@ export default function SettingsPage() {
   const [personalSuccess, setPersonalSuccess] = useState("");
   const [personalLoading, setPersonalLoading] = useState(false);
 
-  // Security state
-  const [editingSecurity, setEditingSecurity] = useState(false);
+const [editingSecurity, setEditingSecurity] = useState(false);
   const [securityData, setSecurityData] = useState({
     currentPassword: "",
     newPassword: "",
@@ -51,12 +42,10 @@ export default function SettingsPage() {
   const [securitySuccess, setSecuritySuccess] = useState("");
   const [securityLoading, setSecurityLoading] = useState(false);
 
-  // Check auth providers
-  const isGoogleUser = user?.providerData?.some((p) => p.providerId === "google.com");
+const isGoogleUser = user?.providerData?.some((p) => p.providerId === "google.com");
   const hasPasswordProvider = user?.providerData?.some((p) => p.providerId === "password");
 
-  // Load profile from Firestore
-  useEffect(() => {
+useEffect(() => {
     async function loadProfile() {
       if (!user) return;
       try {
@@ -91,8 +80,7 @@ export default function SettingsPage() {
     loadProfile();
   }, [user]);
 
-  // Handle profile image upload (convert to base64)
-  function handleImageUpload(e) {
+function handleImageUpload(e) {
     const file = e.target.files[0];
     if (!file) return;
 
@@ -108,8 +96,7 @@ export default function SettingsPage() {
     reader.readAsDataURL(file);
   }
 
-  // Save personal info
-  async function handleSavePersonal() {
+async function handleSavePersonal() {
     setPersonalError("");
     setPersonalSuccess("");
 
@@ -156,8 +143,7 @@ export default function SettingsPage() {
     setPersonalError("");
   }
 
-  // Save security — change password (existing password users)
-  async function handleSaveSecurity() {
+async function handleSaveSecurity() {
     setSecurityError("");
     setSecuritySuccess("");
 
@@ -198,8 +184,7 @@ export default function SettingsPage() {
     }
   }
 
-  // Set password for Google-only users (link email/password provider)
-  async function handleSetPassword() {
+async function handleSetPassword() {
     setSecurityError("");
     setSecuritySuccess("");
 
@@ -245,8 +230,7 @@ export default function SettingsPage() {
     setSecurityError("");
   }
 
-  // Password validation helper
-  function validatePassword(pw) {
+function validatePassword(pw) {
     if (pw.length < 8) return "Password must be at least 8 characters.";
     if (!/[A-Z]/.test(pw)) return "Password must include at least one uppercase letter.";
     if (!/[a-z]/.test(pw)) return "Password must include at least one lowercase letter.";
@@ -264,11 +248,9 @@ export default function SettingsPage() {
     <div className="app-layout">
       <Sidebar />
       <div className="app-content">
-        {/* No topbar on settings page */}
         <main className="settings-page">
           <h1 className="settings-title">Settings</h1>
 
-          {/* ===================== Personal Information ===================== */}
           <section className="settings-section">
             <div className="section-header">
               <h2>Personal Information</h2>
@@ -377,7 +359,7 @@ export default function SettingsPage() {
             <div className="section-header">
               <h2>Security</h2>
               {isGoogleUser && !hasPasswordProvider ? (
-                /* Google-only user — show "Set Password" */
+                
                 !editingSecurity ? (
                   <button className="btn-edit" onClick={() => setEditingSecurity(true)}>
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="16" height="16">
@@ -395,7 +377,7 @@ export default function SettingsPage() {
                   </div>
                 )
               ) : (
-                /* Has password provider — show "Edit" to change password */
+                
                 !editingSecurity ? (
                   <button className="btn-edit" onClick={() => setEditingSecurity(true)}>
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="16" height="16">
@@ -419,7 +401,7 @@ export default function SettingsPage() {
             {securitySuccess && <div className="success-message">{securitySuccess}</div>}
 
             {isGoogleUser && !hasPasswordProvider ? (
-              /* Google-only: set password form */
+              
               !editingSecurity ? (
                 <p className="google-notice">
                   You signed in with Google. Set a password below to also enable email/password login.
@@ -457,7 +439,7 @@ export default function SettingsPage() {
                 </div>
               )
             ) : (
-              /* Has password: change password form */
+              
               <div className="settings-form">
                 <div className="form-group">
                   <label htmlFor="settings-currentPassword">Current Password</label>

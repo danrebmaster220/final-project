@@ -17,6 +17,7 @@ import ForgotPasswordPage from "../pages/ForgotPasswordPage";
 import ContentPage from "../pages/ContentPage";
 import SettingsPage from "../pages/SettingsPage";
 import VerifyEmailPage from "../pages/VerifyEmailPage";
+import LessonPage from "../pages/LessonPage";
 import ProtectedRoute from "../components/ProtectedRoute";
 
 export default function AppRoutes() {
@@ -75,6 +76,14 @@ export default function AppRoutes() {
         element={
           <ProtectedRoute>
             <SettingsPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/lesson/cia-triad"
+        element={
+          <ProtectedRoute>
+            <LessonPage />
           </ProtectedRoute>
         }
       />

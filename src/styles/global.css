@@ -12,17 +12,22 @@
   --text-primary: #f1f5f9;
   --text-secondary: #94a3b8;
   --text-muted: #64748b;
-  --bg-body: #0f172a;
-  --bg-card: #1e293b;
-  --bg-input: #0f172a;
-  --border: #334155;
+  --bg-body: #05080f;
+  --bg-card: rgba(14, 20, 40, 0.55);
+  --bg-input: rgba(8, 12, 28, 0.7);
+  --border: rgba(99, 102, 241, 0.18);
   --border-focus: #6366f1;
-  --shadow-card: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  --shadow-card: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
 
   --font: "Inter", system-ui, -apple-system, sans-serif;
-  --radius: 12px;
-  --radius-sm: 8px;
+  --radius: 16px;
+  --radius-sm: 10px;
   --transition: 0.2s ease;
+
+  /* Neon accent colours */
+  --neon-blue: #38bdf8;
+  --neon-purple: #818cf8;
+  --neon-violet: #a78bfa;
 }
 
 * {
@@ -39,14 +44,67 @@ html {
 
 body {
   font-family: var(--font);
-  background: var(--bg-body);
+  background-color: var(--bg-body);
   color: var(--text-primary);
   min-height: 100vh;
   line-height: 1.6;
+  overflow-x: hidden;
 }
 
+/* ── Atmospheric background glows (fixed, full-page) ── */
 #root {
   min-height: 100vh;
+  position: relative;
+}
+
+/* Static base layer — gently pulses */
+#root::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 70% 55% at 15% 0%,  rgba(109, 40, 217, 0.32) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 40% at 55% -5%,  rgba(56, 189, 248, 0.22) 0%, transparent 65%),
+    radial-gradient(ellipse 55% 50% at 90% 100%, rgba(99, 102, 241, 0.26) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 40% at 0% 55%,  rgba(30, 64, 175, 0.18) 0%, transparent 65%),
+    linear-gradient(160deg, #06091a 0%, #050810 50%, #06091a 100%);
+  animation: bgPulse 18s ease-in-out infinite alternate;
+}
+
+/* Drifting pink/violet accent orb */
+#root::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 45% 35% at 75% 25%, rgba(192, 132, 252, 0.14) 0%, transparent 65%),
+    radial-gradient(ellipse 35% 30% at 25% 80%, rgba(56, 189, 248, 0.12) 0%, transparent 60%);
+  animation: bgDrift 24s ease-in-out infinite alternate;
+}
+
+@keyframes bgPulse {
+  0%   { opacity: 0.8; }
+  50%  { opacity: 1;   }
+  100% { opacity: 0.75; }
+}
+
+@keyframes bgDrift {
+  0%   { transform: translate(0px,   0px);  opacity: 0.6; }
+  33%  { transform: translate(-20px, 15px); opacity: 0.9; }
+  66%  { transform: translate(15px, -12px); opacity: 0.7; }
+  100% { transform: translate(-10px, 20px); opacity: 0.85; }
+}
+
+/* All page content must sit above the fixed background */
+.app-layout,
+.auth-outer,
+.loading-screen {
+  position: relative;
+  z-index: 1;
 }
 
 /* ============================
@@ -67,12 +125,35 @@ body {
 .spinner {
   width: 36px;
   height: 36px;
-  border: 3px solid var(--border);
-  border-top-color: var(--primary);
+  border: 2px solid rgba(99, 102, 241, 0.2);
+  border-top-color: #818cf8;
   border-radius: 50%;
-  animation: spin 0.7s linear infinite;
+  animation: spin 0.8s linear infinite;
+  box-shadow: 0 0 12px rgba(99, 102, 241, 0.4), 0 0 24px rgba(99, 102, 241, 0.15);
 }
 
 @keyframes spin {
   to { transform: rotate(360deg); }
+}
+
+/* ============================
+   Global Floating Particles
+   ============================ */
+
+/* Reusable floating dot keyframe – used by hero-particle & cel-glow */
+@keyframes floatUp {
+  0%   { transform: translateY(0)   scale(1);   opacity: 0; }
+  20%  { opacity: 1; }
+  80%  { opacity: 0.6; }
+  100% { transform: translateY(-120px) scale(0.6); opacity: 0; }
+}
+
+@keyframes glowPulse {
+  0%, 100% { box-shadow: 0 0 8px  currentColor, 0 0 16px currentColor; }
+  50%       { box-shadow: 0 0 18px currentColor, 0 0 36px currentColor; }
+}
+
+@keyframes borderGlow {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(99,102,241,0.2), 0 0 20px rgba(99,102,241,0.08); }
+  50%       { box-shadow: 0 0 0 1px rgba(99,102,241,0.45), 0 0 32px rgba(99,102,241,0.18); }
 }

@@ -9,6 +9,7 @@ import "./styles/global.css";
 import "./styles/components.css";
 import "./styles/auth.css";
 import "./styles/content.css";
+import "./styles/lesson.css";
 import "./styles/settings.css";
 
 createRoot(document.getElementById("root")).render(
