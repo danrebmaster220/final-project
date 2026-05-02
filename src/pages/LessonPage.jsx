@@ -223,33 +223,94 @@ export default function LessonPage() {
   const navigate = useNavigate();
   const { user, firestoreProfile, refreshProfile } = useAuth();
 
-const [currentStep, setCurrentStep] = useState(1);
+  const [currentStep, setCurrentStep] = useState(1);
+  const [maxStepReached, setMaxStepReached] = useState(1);
 
-const [answers, setAnswers] = useState({});
+  const [answers, setAnswers] = useState({});
   const [submitted, setSubmitted] = useState(false);
   const [quizError, setQuizError] = useState("");
 
-const [completed, setCompleted] = useState(false);
+  const [completed, setCompleted] = useState(false);
+
+  function clampStep(value) {
+    if (Number.isNaN(value)) return 1;
+    return Math.min(Math.max(value, 1), TOTAL_STEPS);
+  }
+
+  function getSavedProgress(stepReached, isCompleted) {
+    if (isCompleted) return 100;
+    const completedSteps = Math.max(0, Math.min(stepReached - 1, TOTAL_STEPS));
+    return Math.round((completedSteps / TOTAL_STEPS) * 100);
+  }
+
+  async function saveProgress(stepReached, isCompleted) {
+    if (!user) return;
+    const progress = getSavedProgress(stepReached, isCompleted);
+    const completedKey = `lesson_cia_triad_completed_${user.uid}`;
+    const stepKey = `lesson_cia_triad_step_${user.uid}`;
+    const progressKey = `lesson_cia_triad_progress_${user.uid}`;
+
+    localStorage.setItem(stepKey, String(stepReached));
+    localStorage.setItem(progressKey, String(progress));
+    localStorage.setItem(completedKey, String(isCompleted));
+
+    try {
+      await setDoc(
+        doc(db, "users", user.uid),
+        {
+          lessonProgress: {
+            ciaTriadStep: stepReached,
+            ciaTriadProgress: progress,
+            ciaTriadCompleted: isCompleted,
+            ciaTriadUpdatedAt: serverTimestamp(),
+            ...(isCompleted ? { ciaTriadCompletedAt: serverTimestamp() } : {}),
+          },
+        },
+        { merge: true }
+      );
+      await refreshProfile();
+    } catch (err) {
+      console.error("Failed to save lesson progress:", err);
+    }
+  }
 
   useEffect(() => {
     if (!user) {
       setCompleted(false);
+      setCurrentStep(1);
+      setMaxStepReached(1);
       return;
     }
-    if (firestoreProfile?.lessonProgress?.ciaTriadCompleted) {
-      setCompleted(true);
-      return;
-    }
-    const key = `lesson_cia_triad_completed_${user.uid}`;
-    setCompleted(localStorage.getItem(key) === "true");
+
+    const completedKey = `lesson_cia_triad_completed_${user.uid}`;
+    const stepKey = `lesson_cia_triad_step_${user.uid}`;
+    const progressCompleted = firestoreProfile?.lessonProgress?.ciaTriadCompleted === true ||
+      localStorage.getItem(completedKey) === "true";
+
+    const savedStep = firestoreProfile?.lessonProgress?.ciaTriadStep ??
+      Number.parseInt(localStorage.getItem(stepKey) || "", 10);
+
+    const normalizedStep = clampStep(Number.isFinite(savedStep) ? savedStep : 1);
+
+    setCompleted(progressCompleted);
+    setCurrentStep(progressCompleted ? TOTAL_STEPS : normalizedStep);
+    setMaxStepReached(progressCompleted ? TOTAL_STEPS : normalizedStep);
   }, [user, firestoreProfile]);
 
   const isQuizStep = currentStep === TOTAL_STEPS;
-  const progressPct = Math.round((currentStep / TOTAL_STEPS) * 100);
+  const savedProgressPct = getSavedProgress(maxStepReached, completed);
   const step = STEPS[currentStep - 1];
 
-function goNext() {
-    if (currentStep < TOTAL_STEPS) setCurrentStep((s) => s + 1);
+  function goNext() {
+    if (currentStep < TOTAL_STEPS) {
+      const nextStep = currentStep + 1;
+      const newMax = Math.max(maxStepReached, nextStep);
+      setCurrentStep(nextStep);
+      if (newMax !== maxStepReached) {
+        setMaxStepReached(newMax);
+        void saveProgress(newMax, false);
+      }
+    }
   }
 
   function goPrev() {
@@ -272,27 +333,9 @@ function goNext() {
     const passed = score / QUIZ_QUESTIONS.length >= 0.6;
     setSubmitted(true);
     if (passed) {
-      if (!user) return;
-      const key = `lesson_cia_triad_completed_${user.uid}`;
-      localStorage.setItem(key, "true");
       setCompleted(true);
-      try {
-        await setDoc(
-          doc(db, "users", user.uid),
-          {
-            lessonProgress: {
-              ciaTriadCompleted: true,
-              ciaTriadCompletedAt: serverTimestamp(),
-            },
-          },
-          { merge: true }
-        );
-        if (refreshProfile) {
-          await refreshProfile();
-        }
-      } catch (err) {
-        console.error("Failed to save lesson progress:", err);
-      }
+      setMaxStepReached(TOTAL_STEPS);
+      await saveProgress(TOTAL_STEPS, true);
     }
   }
 
@@ -460,7 +503,7 @@ return (
               <div className="lesson-progress-track">
                 <div
                   className="lesson-progress-bar-fill"
-                  style={{ width: `${progressPct}%` }}
+                  style={{ width: `${savedProgressPct}%` }}
                 />
               </div>
             </div>
@@ -650,7 +693,7 @@ return (
                 className="btn-lesson-next"
                 onClick={goNext}
               >
-                {currentStep === TOTAL_STEPS - 1 ? "Take Quiz" : "Next"}
+                <span>{currentStep === TOTAL_STEPS - 1 ? "Take Quiz" : "Next"}</span>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <line x1="5" y1="12" x2="19" y2="12" />
                   <polyline points="12 5 19 12 12 19" />

@@ -7,25 +7,58 @@ export default function ContentPage() {
   const { user, firestoreProfile } = useAuth();
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
-  const [lessonCompleted, setLessonCompleted] = useState(false);
+  const [lessonProgressPct, setLessonProgressPct] = useState(0);
+
+  function clampProgress(value) {
+    return Math.min(Math.max(value, 0), 100);
+  }
+
+  function getProgressFromStep(step) {
+    if (!Number.isFinite(step)) return 0;
+    const completedSteps = Math.max(0, Math.min(step - 1, 5));
+    return Math.round((completedSteps / 5) * 100);
+  }
 
   useEffect(() => {
     if (!user) {
-      setLessonCompleted(false);
+      setLessonProgressPct(0);
       return;
     }
-    const key = `lesson_cia_triad_completed_${user.uid}`;
+    const completedKey = `lesson_cia_triad_completed_${user.uid}`;
+    const stepKey = `lesson_cia_triad_step_${user.uid}`;
+    const progressKey = `lesson_cia_triad_progress_${user.uid}`;
     function checkCompletion() {
-      if (firestoreProfile?.lessonProgress?.ciaTriadCompleted) {
-        setLessonCompleted(true);
+      const completed = firestoreProfile?.lessonProgress?.ciaTriadCompleted === true ||
+        localStorage.getItem(completedKey) === "true";
+      if (completed) {
+        setLessonProgressPct(100);
         return;
       }
-      setLessonCompleted(localStorage.getItem(key) === "true");
+
+      const firestoreProgress = firestoreProfile?.lessonProgress?.ciaTriadProgress;
+      if (Number.isFinite(firestoreProgress)) {
+        setLessonProgressPct(clampProgress(firestoreProgress));
+        return;
+      }
+
+      const savedStep = firestoreProfile?.lessonProgress?.ciaTriadStep ??
+        Number.parseInt(localStorage.getItem(stepKey) || "", 10);
+      const localProgress = Number.parseInt(localStorage.getItem(progressKey) || "", 10);
+
+      if (Number.isFinite(localProgress)) {
+        setLessonProgressPct(clampProgress(localProgress));
+        return;
+      }
+
+      setLessonProgressPct(clampProgress(getProgressFromStep(savedStep)));
     }
     checkCompletion();
     window.addEventListener("focus", checkCompletion);
     return () => window.removeEventListener("focus", checkCompletion);
   }, [user, firestoreProfile]);
+
+  const lessonCompleted = lessonProgressPct >= 100;
+  const lessonInProgress = lessonProgressPct > 0 && lessonProgressPct < 100;
 
   const initial =
     user?.displayName?.charAt(0)?.toUpperCase() ||
@@ -205,6 +238,11 @@ export default function ContentPage() {
                         <span className="lesson-status-dot" />
                         Completed
                       </span>
+                    ) : lessonInProgress ? (
+                      <span className="lesson-status lesson-status--in-progress">
+                        <span className="lesson-status-dot" />
+                        In Progress
+                      </span>
                     ) : (
                       <span className="lesson-status lesson-status--not-started">
                         <span className="lesson-status-dot" />
@@ -248,11 +286,11 @@ export default function ContentPage() {
                     <div className="lesson-progress-bar">
                       <div
                         className="lesson-progress-fill"
-                        style={{ width: lessonCompleted ? "100%" : "0%" }}
+                        style={{ width: `${lessonProgressPct}%` }}
                       />
                     </div>
                     <span className="lesson-progress-label">
-                      {lessonCompleted ? "100% Complete" : "0% Complete"}
+                      {lessonProgressPct}% Complete
                     </span>
                   </div>
 
@@ -262,7 +300,13 @@ export default function ContentPage() {
                     className="btn-start-lesson"
                     onClick={() => navigate("/lesson/cia-triad")}
                   >
-                    <span>{lessonCompleted ? "Review Lesson" : "Start Lesson"}</span>
+                    <span>
+                      {lessonCompleted
+                        ? "Review Lesson"
+                        : lessonInProgress
+                        ? "Continue Lesson"
+                        : "Start Lesson"}
+                    </span>
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                       <line x1="5" y1="12" x2="19" y2="12" />
                       <polyline points="12 5 19 12 12 19" />
