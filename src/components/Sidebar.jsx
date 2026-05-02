@@ -50,7 +50,7 @@ export default function Sidebar() {
     <>
       {/* Mobile hamburger button (only visible on small screens) */}
       <button
-        className="mobile-menu-btn"
+        className={`mobile-menu-btn${mobileOpen ? " mobile-menu-btn--open" : ""}`}
         onClick={() => setMobileOpen((prev) => !prev)}
         aria-label="Toggle menu"
       >

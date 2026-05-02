@@ -255,7 +255,7 @@
 
 @media (max-width: 768px) {
   .settings-page {
-    padding: 20px 16px;
+    padding: calc(72px + env(safe-area-inset-top)) 16px 20px;
   }
 
   .settings-section {

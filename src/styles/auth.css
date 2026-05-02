@@ -267,3 +267,29 @@
     padding: 32px 20px;
   }
 }
+
+@media (max-width: 360px) {
+  .auth-card,
+  .verify-card {
+    padding: 22px 16px;
+  }
+
+  .auth-header h1,
+  .verify-title {
+    font-size: 20px;
+  }
+
+  .auth-subtitle,
+  .verify-text,
+  .verify-subtext {
+    font-size: 12px;
+  }
+
+  .verify-email {
+    font-size: 13px;
+  }
+
+  .divider {
+    margin: 16px 0;
+  }
+}

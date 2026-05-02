@@ -227,8 +227,8 @@
 /* Floating profile icon (top-right, no header bar) */
 .floating-profile {
   position: absolute;
-  top: 16px;
-  right: 20px;
+  top: calc(16px + env(safe-area-inset-top));
+  right: calc(20px + env(safe-area-inset-right));
   cursor: pointer;
   border-radius: 50%;
   transition: opacity var(--transition);
@@ -399,8 +399,8 @@
     align-items: center;
     justify-content: center;
     position: fixed;
-    top: 12px;
-    left: 12px;
+    top: calc(12px + env(safe-area-inset-top));
+    left: calc(12px + env(safe-area-inset-left));
     z-index: 150;
     width: 40px;
     height: 40px;
@@ -420,6 +420,10 @@
   .mobile-menu-btn svg {
     width: 20px;
     height: 20px;
+  }
+
+  .mobile-menu-btn--open {
+    left: calc(240px - 40px - 12px + env(safe-area-inset-left));
   }
 
   /* Sidebar off-screen by default on mobile */

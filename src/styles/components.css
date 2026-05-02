@@ -163,6 +163,22 @@
   }
 }
 
+@media (max-width: 360px) {
+  .step-dot {
+    width: 24px;
+    height: 24px;
+    font-size: 11px;
+  }
+
+  .step-line {
+    width: 40px;
+  }
+
+  .step-section-title {
+    font-size: 14px;
+  }
+}
+
 /* ============================
    Password Checklist
    ============================ */
